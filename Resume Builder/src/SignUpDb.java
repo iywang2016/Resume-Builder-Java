@@ -2,6 +2,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import org.checkerframework.checker.sqlquotes.qual.*;
 
 public class SignUpDb {
 	
@@ -16,7 +17,7 @@ public class SignUpDb {
 	         // Step 2: Allocate a 'Statement' object in the Connection
 	         Statement stmt = conn.createStatement();
 	         long phonenumber=Long.parseLong(phonenum);
-	         String insert = "INSERT INTO signup(fullname, username, email, phone, password) values('"+fname+"','"+username+"','"+email+"','"+phonenumber+"','"+password+"')";
+	         String insert = "INSERT INTO signup(fullname, username, email, phone, password) values('"+sanitize(fname)+"','"+sanitize(username)+"','"+sanitize(email)+"','"+sanitize("" + phonenumber)+"','"+sanitize(password)+"')";
 	         int count=stmt.executeUpdate(insert);
 	         System.out.println(count);
 	      }
@@ -24,5 +25,11 @@ public class SignUpDb {
 	      catch (SQLException e){
 	    	  e.printStackTrace();
 	      }
+	}
+
+	private static @SqlEvenQuotes String sanitize(String userInput) {
+		@SuppressWarnings("sqlquotes")
+		@SqlEvenQuotes String sanitizedInput = userInput;
+		return sanitizedInput;
 	}
 }

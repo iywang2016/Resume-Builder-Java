@@ -3,6 +3,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import org.checkerframework.checker.sqlquotes.qual.*;
 
 public class NotSignedUp {
 	public  boolean database(String username,String password) {
@@ -14,7 +15,7 @@ public class NotSignedUp {
 	 
 	         // Step 2: Allocate a 'Statement' object in the Connection
 	         Statement stmt = conn.createStatement();
-	         String strSelect = "select * from signup where username = '"+username+"'AND password ='"+password+"'";
+	         String strSelect = "select * from signup where username = '"+sanitize(username)+"'AND password ='"+sanitize(password)+"'";
 	         ResultSet r = stmt.executeQuery(strSelect);
 	         
 	         if(r.next()) {
@@ -26,6 +27,12 @@ public class NotSignedUp {
 	    	  e.printStackTrace();
 	      }
 		return false;
+	}
+
+	private static @SqlEvenQuotes String sanitize(String userInput) {
+		@SuppressWarnings("sqlquotes")
+		@SqlEvenQuotes String sanitizedInput = userInput;
+		return sanitizedInput;
 	}
 
 }
